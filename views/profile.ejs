@@ -1,0 +1,27 @@
+<%- include('partials/header'); -%>
+
+  <section>
+    <div class="container">
+      <h1>
+        <%= user.name %>
+      </h1>
+      <img class="w-28 h-28 object-cover" src="<%= user.avatar %>" alt="<%= user.name %>">
+      <div>
+        <p>
+          <span>Name:</span>
+          <span>
+            <%= user.name %>
+          </span>
+        </p>
+        <p>
+          <span>Email</span>
+          <span>
+            <%= user.email %>
+          </span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+  <%- include('partials/footer'); -%>

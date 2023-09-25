@@ -1,0 +1,35 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT - Mongoose - Taiwlind</title>
+    <link rel="stylesheet" href="/tailwind.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <nav>
+        <h1><a href="/">JWT AUTH</a></h1>
+        <ul class="guest-nav">
+            <% if (user) { %>
+                <li>Welcome, <%= user.email %>
+                </li>
+                <li><a href="/logout">Log out</a></li>
+                <li class="w-14 h-14 rounded-full">
+                    <a href="/profile" class="p-0 w-14 h-14 rounded-full">
+                        <img class="rounded-full w-full h-full object-cover" src="<%= user.avatar  %>"
+                            alt="<%= user.name  %>">
+                    </a>
+                </li>
+                <% } %>
+                    <% if (!user) { %>
+                        <li><a href="/login">Log in</a></li>
+                        <li><a class="btn" href="/signup">Sign up</a></li>
+                        <% } %>
+        </ul>
+    </nav>
+
+    <script>
+        const guest = document.querySelector('.guest-nav');
+    </script>

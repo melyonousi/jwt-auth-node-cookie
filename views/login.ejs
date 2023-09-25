@@ -1,0 +1,74 @@
+<%- include('partials/header'); -%>
+
+    <form>
+        <h1>Login</h1>
+        <p class="message error"></p>
+        <div class="">
+            <label for="email" class="capitalize">Email</label>
+            <input type="email" name="email" required>
+            <span class="email error"></span>
+        </div>
+
+        <div class="">
+            <label for="password" class="capitalize">password</label>
+            <input type="password" name="password" required>
+            <span class="password error"></span>
+        </div>
+
+        <div class="">
+            <button type="submit" class="transition-all duration-700 ease-in-out">
+                <span>Login</span>
+                <span class="pending hidden animate-pulse">...</span>
+            </button>
+        </div>
+    </form>
+
+    <script>
+        const form = document.querySelector('form')
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault()
+
+                //get values
+                const email = form.email.value
+                const password = form.password.value
+
+                const pending = form.querySelector('.pending')
+                pending.classList.remove('hidden')
+                
+                form.querySelectorAll('.error').forEach(element => {
+                    element.textContent = ''
+                });
+
+                try {
+                    const res = await fetch('/login', {
+                        method: 'POST',
+                        body: JSON.stringify({ email, password }),
+                        headers: {
+                            'Content-Type': "application/json",
+                        }
+                    })
+                    
+                    const data = await res.json()
+                    if (data.success) {
+                        form.querySelector('.error.message').textContent = data.success
+                        location.assign('/')
+                    }
+
+                    if (data.errors) {
+                        for (let index = 0; index < Object.keys(data.errors).length; index++) {
+                            const key = Object.keys(data.errors)[index]
+                            form.querySelector('.error.' + key).textContent = data.errors[key]
+                        }
+                    }
+
+                } catch (error) {
+                    form.querySelector('.error.message').textContent = error.message
+                }
+
+                pending.classList.add('hidden')
+            })
+        }
+    </script>
+
+    <%- include('partials/footer'); -%>

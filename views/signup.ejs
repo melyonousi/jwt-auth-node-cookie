@@ -1,0 +1,90 @@
+<%- include('partials/header'); -%>
+
+    <form>
+        <h1>Sign up</h1>
+        <p class="message error"></p>
+        <div class="">
+            <label for="name" class="capitalize">name</label>
+            <input type="text" name="name" required>
+            <span class="name error"></span>
+        </div>
+
+        <div class="">
+            <label for="email" class="capitalize">Email</label>
+            <input type="email" name="email" required>
+            <span class="email error"></span>
+        </div>
+
+        <div class="">
+            <label for="password" class="capitalize">password</label>
+            <input type="password" name="password" required>
+            <span class="password error"></span>
+        </div>
+
+        <div class="">
+            <label for="avatar" class="capitalize">avatar</label>
+            <input type="file" name="avatar">
+            <span class="avatar error"></span>
+        </div>
+
+        <div class="">
+            <button type="submit">
+                <span>Sign up</span>
+                <span class="pending hidden animate-pulse">...</span>
+            </button>
+        </div>
+    </form>
+
+    <script>
+        const form = document.querySelector('form')
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault()
+
+                //get values
+                const name = form.name.value
+                const email = form.email.value
+                const password = form.password.value
+                let avatar = form.avatar.value
+
+                const pending = form.querySelector('.pending')
+                pending.classList.remove('hidden')
+                if (avatar == null || avatar == "") {
+                    avatar = "https://placehold.co/600x600?text=" + name.charAt(0).toUpperCase()
+                }
+                form.querySelectorAll('.error').forEach(element => {
+                    element.textContent = ''
+                });
+
+                try {
+                    const res = await fetch('/signup', {
+                        method: 'POST',
+                        body: JSON.stringify({ name, email, password, avatar }),
+                        headers: {
+                            'Content-Type': "application/json",
+                        }
+                    })
+
+                    const data = await res.json()
+                    if (data.success) {
+                        form.querySelector('.error.message').textContent = data.success
+                        location.assign('/login')
+                    }
+
+                    if (data.errors) {
+                        for (let index = 0; index < Object.keys(data.errors).length; index++) {
+                            const key = Object.keys(data.errors)[index]
+                            form.querySelector('.error.' + key).textContent = data.errors[key]
+                        }
+                    }
+
+                } catch (error) {
+                    form.querySelector('.error.message').textContent = error.message
+                }
+
+                pending.classList.add('hidden')
+            })
+        }
+    </script>
+
+    <%- include('partials/footer'); -%>
